@@ -4,10 +4,9 @@ import axios from 'axios';
 
 export const axiosInstance = axios.create({
   // baseURL: VITE_CUSTOM_MODE === 'DEV' ? VITE_API_URL_DEV : VITE_API_URL_PROD,
-  baseURL:"http://localhost:8080/api/v1/",
+  baseURL:"https://api.spacexdata.com/v3/",
   headers: {
     'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache',
   },
 });
 

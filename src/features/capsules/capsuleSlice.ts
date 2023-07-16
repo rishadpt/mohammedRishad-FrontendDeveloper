@@ -1,38 +1,35 @@
-import { PayloadAction, createSlice, current } from '@reduxjs/toolkit';
-import {
-  fetchCapsules
-} from './capsuleAction';
+import { PayloadAction, createSlice, current } from "@reduxjs/toolkit";
+import { fetchCapsules } from "./capsuleAction";
 import {
   IMaidListItem,
   ICapsuleState,
-} from '../../types/features/capsules/capsule.type';
-import { getFilterdData } from '../utils/getFilterdData';
-
+} from "../../types/features/capsules/capsule.type";
+import { getFilterdData } from "../utils/getFilterdData";
 
 const totalItemsPerPage = 6;
-
 
 const initialState: ICapsuleState = {
   error: false,
   loading: false,
-  status: 'idle',
+  status: "idle",
   message: null,
   data: [],
+  filterdData: null,
+  filterdDataBackup: [],
   singleMaid: {},
   totalLength: 0,
 };
 
-const maidSlice = createSlice({
-  name: 'maid',
+const capsuleSlice = createSlice({
+  name: "maid",
   initialState,
   reducers: {
-    resetMaidState: (state: ICapsuleState) => {
+    resetCapsuleState: (state: ICapsuleState) => {
       state.error = false;
       state.loading = false;
-      state.status = 'idle';
+      state.status = "idle";
       state.message = null;
     },
-
 
     filterData: (state, { payload }) => {
       const resultData = getFilterdData(payload, current(state.data));
@@ -44,9 +41,30 @@ const maidSlice = createSlice({
       const endIndex = startIndex + perPage; // Calculate the ending index of the current page
       console.log(page);
       const paginatedData =
-        current(state.data)?.slice(startIndex, endIndex) ?? [];
+        current(state.filterdDataBackup)?.slice(startIndex, endIndex) ?? [];
 
-      state.data = paginatedData;
+      state.filterdData = paginatedData;
+    },
+
+    onBannerSubmit: (state, { payload: { data } }) => {
+      const { status, original_launch, type } = data;
+
+      // Filter tableData based on the selected search filters
+      const filteredData = state.filterdDataBackup.filter((item) => {
+        if (status && item.status !== status) {
+          return false;
+        }
+        if (original_launch && item.original_launch !== original_launch) {
+          return false;
+        }
+        if (type && item.type !== type) {
+          return false;
+        }
+        return true;
+      });
+      state.filterdData = filteredData.slice(0, totalItemsPerPage);
+      state.filterdDataBackup = filterData;
+      state.totalLength = filteredData.length;
     },
   },
   extraReducers: (builder) => {
@@ -60,26 +78,21 @@ const maidSlice = createSlice({
           state.filterdDataBackup = payload;
           state.totalLength = payload.length;
           state.loading = false;
-          state.status = 'success';
+          state.status = "success";
         }
       )
       .addCase(fetchCapsules.pending, (state) => {
         state.error = false;
         state.loading = true;
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchCapsules.rejected, (state) => {
         state.error = true;
         state.loading = false;
-        state.status = 'error';
-      })
-
+        state.status = "error";
+      });
   },
 });
-export const {
-  filterData,
-  resetMaidState,
-  pagination,
-
-} = maidSlice.actions;
-export default maidSlice.reducer;
+export const { filterData, resetCapsuleState, pagination, onBannerSubmit } =
+  capsuleSlice.actions;
+export default capsuleSlice.reducer;

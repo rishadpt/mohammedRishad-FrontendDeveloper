@@ -58,7 +58,7 @@ const Pagination: React.FC<PaginationProps> = ({
           justify='center'
           // variant='normal'
           borderLeft='0'
-          onClick={() => handlePageChange(currentPage - 1)}
+          onClick={() => currentPage !== 1 && handlePageChange(currentPage - 1)}
           style={{ cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
           opacity={currentPage === 1 ? 0.5 : 1}
         >
@@ -97,7 +97,7 @@ const Pagination: React.FC<PaginationProps> = ({
           justify='center'
           borderLeft={'1px solid #D0D5DD'}
           // variant='normal'
-          onClick={() => handlePageChange(currentPage + 1)}
+          onClick={() =>currentPage !== totalPages && handlePageChange(currentPage + 1)}
           style={{
             cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
           }}

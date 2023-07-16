@@ -1,10 +1,12 @@
 export type ICapsuleState = {
   error: boolean;
   loading: boolean;
+  filterdData: any;
   status: 'idle' | 'error' | 'success' | 'loading';
   message: string | null;
   data: IMaidListItem[] | null;
   singleMaid: any;
+  filterdDataBackup: any,
   totalLength: number;
 };
 
@@ -48,7 +50,3 @@ export type IFeaturedMaidCard = {
 }
 
 
-export type ICapsuleType = {
-  nationalityCounts: { count: number, id: string }[],
-  serviceCounts: { count: number, id: string }[]
-}

@@ -12,12 +12,14 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLayoutEffect, useState } from 'react';
 import SelectInput from '../../../../components/InputFields/SelectInput/SelectInput';
-import { capsuleStatusList, originalLaunchList,capsuleTypeList } from './banner.data';
+import { capsuleStatusList, originalLaunchList, capsuleTypeList } from './banner.data';
 import bannerImage1 from '../../../../assets/images/Home/banner image 1.png';
 import bannerImage2 from '../../../../assets/images/Home/banner image 2.png';
 import bannerImage3 from '../../../../assets/images/Home/banner image 3.png';
 import bannerImage4 from '../../../../assets/images/Home/banner image 4.png';
 import bannerImage5 from '../../../../assets/images/Home/banner image 5.png';
+import { onBannerSubmit } from '../../../../features/capsules/capsuleSlice'
+import { useAppDispatch } from '../../../../hooks/useAppDispatch/useAppDispatch';
 
 const bannerLength = 8;
 const bannerImagesDesktop = [
@@ -37,17 +39,15 @@ const bannerTitle: string[] = [
 const AnimatedBox = motion(Box);
 
 export default function Banner() {
-  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
   const [bannerIndex, setBannerIndex] = useState<number>(0);
 
   const { register, handleSubmit } = useForm({ mode: 'onChange' });
 
   const onBannerSubmission = (data) => {
     console.log({ data });
-    const { location, service } = data;
-    if (location || service) {
-      navigate(`/search?location=${location}&service=${service}`);
-    }
+    dispatch(onBannerSubmit({data}));
   };
 
   useLayoutEffect(() => {
@@ -65,10 +65,7 @@ export default function Banner() {
       h={{ base: 'max-content' }}
       w='100%'
       h={{lg:'100vh'}}
-
     >
- 
-
       <Flex w='100%' pos='relative' h='100%' rounded='xl'   >
         <Box
           w='100%'
@@ -115,13 +112,12 @@ export default function Banner() {
               Wanna get the Details <br /> About Rocket & Capsules?
             </Heading>
             <Text variant='description' color='white'>
-            Embark on a thrilling space journey with our curated selection of rockets, capsules, and SpaceX missions. Experience awe-inspiring launches, Discover the captivating realm beyond Earth's atmosphere.
+              Embark on a thrilling space journey with our curated selection of rockets, capsules, and SpaceX missions. Experience awe-inspiring launches, Discover the captivating realm beyond Earth's atmosphere.
               <br />
               <strong>
-          EXPLORE NOW
+                EXPLORE NOW
               </strong>
               <br />
-
             </Text>
           </VStack>
 
@@ -164,16 +160,16 @@ export default function Banner() {
             </VStack>
 
             <SelectInput
-              label='status?'
+              label='Status?'
               list={capsuleStatusList}
               register={register('status')}
             />
             <SelectInput
-              label='OriginalLaunch?'
+              label='Original Launch?'
               list={originalLaunchList}
               register={register('original_launch')}
             />
-                 <SelectInput
+            <SelectInput
               label='Type?'
               list={capsuleTypeList}
               register={register('type')}
